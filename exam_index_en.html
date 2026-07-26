@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Knowledge Exam — Dental &amp; Dermatology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-900:#0B3B37;
+    --teal-700:#0F766E;
+    --teal-600:#128077;
+    --teal-100:#E3F2EF;
+    --bg:#F6F8F7;
+    --card:#FFFFFF;
+    --ink:#16211F;
+    --ink-soft:#5B6B67;
+    --line:#DCE6E3;
+    --amber:#B8791A;
+    --amber-bg:#FCF1DE;
+    --red:#C23B33;
+    --red-bg:#FBEAE8;
+    --green:#1F8A5F;
+    --green-bg:#E7F5EE;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(11,59,55,.06), 0 8px 24px -12px rgba(11,59,55,.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    line-height:1.55;
+  }
+  .ar-text{font-family:'Tajawal',sans-serif; direction:rtl; text-align:left;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ---------- top identity strip ---------- */
+  .brand-strip{
+    background:var(--teal-900);
+    color:#EAF3F1;
+    padding:10px 20px;
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    letter-spacing:.2px;
+  }
+  .brand-strip b{color:#fff; font-weight:700;}
+
+  /* ---------- start screen ---------- */
+  .wrap{max-width:760px; margin:0 auto; padding:32px 18px 60px;}
+  .hero{
+    text-align:center;
+    padding:18px 0 28px;
+  }
+  .hero .eyebrow{
+    color:var(--teal-700); font-weight:700; font-size:13px; letter-spacing:.5px; text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(24px,4vw,32px);
+    margin:6px 0 8px;
+    font-weight:800;
+    color:var(--teal-900);
+  }
+  .hero p{color:var(--ink-soft); font-size:14.5px; max-width:520px; margin:0 auto;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:26px;
+    margin-bottom:18px;
+  }
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-weight:700; font-size:14px; margin-bottom:6px; color:var(--teal-900);}
+  .field input[type=text], .field input[type=number]{
+    width:100%; padding:11px 13px; border:1.5px solid var(--line); border-radius:10px;
+    font-family:'Inter',sans-serif; font-size:15px; background:#fff; color:var(--ink);
+  }
+  .field input:focus{outline:none; border-color:var(--teal-600); box-shadow:0 0 0 3px var(--teal-100);}
+  .field .hint{font-size:12px; color:var(--ink-soft); margin-top:5px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:560px){.row2{grid-template-columns:1fr;}}
+
+  .group-picker{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  @media(max-width:560px){.group-picker{grid-template-columns:1fr;}}
+  .group-chip{
+    display:flex; align-items:center; gap:9px;
+    border:1.5px solid var(--line); border-radius:10px; padding:9px 12px;
+    font-size:13.5px; cursor:pointer; user-select:none; background:#fcfdfc;
+  }
+  .group-chip input{accent-color:var(--teal-700); width:16px; height:16px;}
+  .group-chip.checked{border-color:var(--teal-600); background:var(--teal-100);}
+  .picker-actions{display:flex; gap:10px; margin:10px 0 4px; font-size:13px;}
+  .picker-actions button{
+    background:none; border:none; color:var(--teal-700); font-weight:700; cursor:pointer; padding:0;
+    font-family:'Inter',sans-serif; text-decoration:underline;
+  }
+
+  .btn-primary{
+    width:100%; background:var(--teal-700); color:#fff; border:none; border-radius:11px;
+    padding:15px; font-size:16px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer;
+    transition:background .15s;
+  }
+  .btn-primary:hover{background:var(--teal-600);}
+  .btn-primary:disabled{background:#A9BDB9; cursor:not-allowed;}
+  .btn-secondary{
+    background:#fff; color:var(--teal-700); border:1.5px solid var(--teal-700); border-radius:11px;
+    padding:12px 18px; font-size:14.5px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer;
+  }
+  .btn-ghost{
+    background:none; border:1.5px solid var(--line); color:var(--ink-soft); border-radius:10px;
+    padding:9px 14px; font-size:13.5px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer;
+  }
+
+  /* ---------- exam screen ---------- */
+  .exam-topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--teal-900); color:#fff;
+    padding:12px 18px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .exam-topbar .who{font-size:12.5px; opacity:.85; line-height:1.4;}
+  .exam-topbar .who b{color:#fff; font-weight:700;}
+  .timer-pill{
+    display:flex; align-items:center; gap:9px;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    border-radius:30px; padding:6px 14px 6px 8px;
+  }
+  .timer-ring{width:15px; height:15px; border-radius:50%; background:var(--green); position:relative; flex:0 0 auto;}
+  .timer-ring::after{
+    content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--green);
+    opacity:.5; animation:pulse 1.6s infinite;
+  }
+  .timer-ring.amber, .timer-ring.amber::after{background:var(--amber); border-color:var(--amber);}
+  .timer-ring.red, .timer-ring.red::after{background:var(--red); border-color:var(--red);}
+  @keyframes pulse{0%{transform:scale(1); opacity:.55;} 70%{transform:scale(1.9); opacity:0;} 100%{opacity:0;}}
+  .timer-num{font-size:18px; font-weight:600; letter-spacing:.5px;}
+  .progress-wrap{
+    background:var(--card); border-bottom:1px solid var(--line); padding:10px 18px;
+    position:sticky; top:56px; z-index:19;
+  }
+  .progress-bar-bg{height:6px; background:var(--line); border-radius:4px; overflow:hidden;}
+  .progress-bar-fill{height:100%; background:var(--teal-600); width:0%; transition:width .25s;}
+  .progress-label{font-size:12px; color:var(--ink-soft); margin-top:6px; display:flex; justify-content:space-between;}
+
+  .group-block{margin:22px 0;}
+  .group-title{
+    display:flex; align-items:center; gap:10px;
+    color:var(--teal-900); font-weight:800; font-size:15.5px;
+    margin:0 0 12px; padding-left:2px;
+  }
+  .group-badge{
+    background:var(--teal-700); color:#fff; font-size:12px; font-weight:700;
+    width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+
+  .q-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:12px;
+  }
+  .q-head{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .q-num{font-size:12px; color:var(--ink-soft); font-weight:700; margin-bottom:4px;}
+  .q-en{font-size:15.5px; font-weight:700; color:var(--ink); margin:0 0 3px;}
+  .q-ar{font-size:13px; color:var(--ink-soft); margin:0;}
+
+  .toggle-answer{
+    background:none; border:1px dashed var(--teal-600); color:var(--teal-700);
+    font-size:12.5px; font-weight:700; border-radius:8px; padding:6px 10px; cursor:pointer;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .model-answer{
+    display:none; margin-top:12px; padding:12px 14px; background:var(--teal-100);
+    border-radius:10px; font-size:13.5px; color:var(--teal-900);
+    border-left:3px solid var(--teal-700);
+  }
+  .model-answer.show{display:block;}
+  .model-answer .ar{color:#2A4A46; margin-top:4px; font-size:12.5px;}
+  .eval-note{font-size:12px; color:var(--amber); margin-top:8px; display:flex; gap:6px;}
+
+  .rating-row{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  .rate-opt{flex:1; min-width:120px;}
+  .rate-opt input{display:none;}
+  .rate-opt label{
+    display:block; text-align:center; padding:9px 6px; border-radius:9px; border:1.5px solid var(--line);
+    font-size:13px; font-weight:700; cursor:pointer; color:var(--ink-soft); background:#fbfcfb;
+  }
+  .rate-opt input:checked + label.none{background:var(--red-bg); border-color:var(--red); color:var(--red);}
+  .rate-opt input:checked + label.partial{background:var(--amber-bg); border-color:var(--amber); color:var(--amber);}
+  .rate-opt input:checked + label.full{background:var(--green-bg); border-color:var(--green); color:var(--green);}
+
+  .note-field{width:100%; margin-top:10px; border:1.5px solid var(--line); border-radius:9px; padding:8px 10px;
+    font-family:'Inter',sans-serif; font-size:13px; resize:vertical; min-height:38px;}
+
+  .exam-footer{
+    max-width:820px; margin:26px auto 60px; padding:0 18px; display:flex; gap:12px; justify-content:flex-end;
+  }
+  @media(max-width:560px){.exam-footer{flex-direction:column-reverse;}}
+
+  .exam-body{max-width:820px; margin:0 auto; padding:20px 18px 0;}
+
+  /* ---------- results screen ---------- */
+  .score-hero{
+    text-align:center; background:linear-gradient(180deg,var(--teal-900),var(--teal-700));
+    color:#fff; border-radius:var(--radius); padding:34px 20px; margin-bottom:20px;
+  }
+  .score-hero .pct{font-size:52px; font-weight:800; font-family:'IBM Plex Mono',monospace;}
+  .score-hero .sub{opacity:.85; font-size:13.5px; margin-top:4px;}
+  .breakdown{border-collapse:collapse; width:100%; font-size:13.5px;}
+  .breakdown th, .breakdown td{padding:9px 8px; text-align:left; border-bottom:1px solid var(--line);}
+  .breakdown th{color:var(--ink-soft); font-size:12px; font-weight:700;}
+  .tag{display:inline-block; padding:2px 9px; border-radius:20px; font-size:11.5px; font-weight:700;}
+  .tag.ok{background:var(--green-bg); color:var(--green);}
+  .tag.warn{background:var(--amber-bg); color:var(--amber);}
+  .tag.bad{background:var(--red-bg); color:var(--red);}
+  .result-actions{display:flex; gap:12px; margin-top:20px;}
+  @media(max-width:560px){.result-actions{flex-direction:column;}}
+  .save-status{font-size:12.5px; margin-top:10px; color:var(--ink-soft);}
+  .save-status.ok{color:var(--green);}
+  .save-status.err{color:var(--red);}
+
+  /* ---------- print ---------- */
+  @media print{
+    .brand-strip, .exam-topbar, .progress-wrap, .toggle-answer, .exam-footer, .result-actions,
+    .rating-row input, .note-field::placeholder, .save-status{display:none !important;}
+    body{background:#fff;}
+    .q-card{break-inside:avoid; border:1px solid #ccc;}
+    .model-answer{display:block !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-strip">
+  <span>Apex Care Clinics — Clinical Knowledge Assessment System</span>
+  <span id="clock" class="mono"></span>
+</div>
+
+<!-- ============ SCREEN 1: START ============ -->
+<section id="screen-start" class="screen active">
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">Live oral exam conducted by the evaluator</div>
+      <h1>Clinical Knowledge Exam</h1>
+      <p>Dental &amp; Dermatology — electronic evaluation form for nurse answers, replacing the paper version</p>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Nurse Name</label>
+        <input type="text" id="nurseName" placeholder="e.g. Sara Ahmed">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Evaluator Name</label>
+          <input type="text" id="evaluatorName" placeholder="e.g. N. Khalid">
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input type="text" id="examDate">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Groups to Evaluate</label>
+        <div class="picker-actions">
+          <button type="button" onclick="selectAllGroups(true)">Select All</button>
+          <button type="button" onclick="selectAllGroups(false)">Deselect All</button>
+        </div>
+        <div class="group-picker" id="groupPicker"></div>
+      </div>
+
+      <div class="field">
+        <label>Total Exam Duration (minutes)</label>
+        <input type="number" id="totalMinutes" value="60" min="5" max="180">
+        <div class="hint">One single countdown timer for the whole exam — starts as soon as you press Start Exam</div>
+      </div>
+
+      <button class="btn-primary" id="startBtn" onclick="startExam()">Start Exam</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREEN 2: EXAM ============ -->
+<section id="screen-exam" class="screen">
+  <div class="exam-topbar">
+    <div class="who">
+      <div><b id="who-nurse"></b></div>
+      <div id="who-meta"></div>
+    </div>
+    <div class="timer-pill">
+      <span class="timer-ring" id="timerRing"></span>
+      <span class="timer-num mono" id="timerNum">60:00</span>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-label">
+      <span id="progressText">0 of 0 questions rated</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
+
+  <div class="exam-body" id="examBody"></div>
+
+  <div class="exam-footer">
+    <button class="btn-ghost" onclick="confirmExit()">Cancel &amp; Exit</button>
+    <button class="btn-primary" style="width:auto; padding:14px 30px;" onclick="finishExam()">Finish Exam &amp; Show Results</button>
+  </div>
+</section>
+
+<!-- ============ SCREEN 3: RESULTS ============ -->
+<section id="screen-results" class="screen">
+  <div class="wrap">
+    <div class="score-hero">
+      <div class="pct" id="finalPct">0%</div>
+      <div class="sub" id="finalSub">0 of 0 points</div>
+    </div>
+
+    <div class="card">
+      <table class="breakdown">
+        <thead><tr><th>Group</th><th>Score</th><th>Percentage</th><th>Rating</th></tr></thead>
+        <tbody id="breakdownBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card" id="printHeaderCard">
+      <div class="row2">
+        <div><b>Nurse Name:</b> <span id="r-nurse"></span></div>
+        <div><b>Evaluator Name:</b> <span id="r-evaluator"></span></div>
+      </div>
+      <div class="row2" style="margin-top:10px;">
+        <div><b>Date:</b> <span id="r-date"></span></div>
+        <div><b>Time Taken:</b> <span id="r-time"></span></div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-primary" onclick="saveResults()">Save Results</button>
+      <button class="btn-secondary" onclick="window.print()">Print</button>
+      <button class="btn-ghost" onclick="location.reload()">New Exam</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   CONFIG — put your Apps Script Web App URL here after deployment
+   ========================================================= */
+const GAS_WEB_APP_URL = "PUT_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+/* =========================================================
+   DATA — question bank (10 groups x 5 questions)
+   ========================================================= */
+const QUESTION_BANK = [
+{ id:1, title:"Patient Identity & Rights", titleAr:"التحقق من هوية المريض وحقوقه", questions:[
+  {en:"How do you verify the patient's identity before starting a dental or dermatological procedure?", ar:"كيف تتحقق من هوية المريض قبل بدء الإجراء؟",
+   aEn:"By asking the patient to state their full name and checking the identification against the medical record.", aAr:"بطلب ذكر اسمه الكامل ومطابقته مع السجل الطبي.",
+   note:"They must make the patient speak their own name; do not accept \"yes/no\" identity checks."},
+  {en:"What must you verify before assisting in a dermatological procedure?", ar:"ماذا يجب أن تتحقق منه قبل المساعدة في إجراء جلدي؟",
+   aEn:"The \"5 Rights\" of medication/product, the correct procedure site, and the patient's informed consent.", aAr:"\"الحقوق الخمسة\" للدواء، موقع الإجراء الصحيح، والموافقة المستنيرة.",
+   note:"Verifies they check consent and the exact treatment area before starting."},
+  {en:"How do you confirm the correct tooth or skin area for a procedure?", ar:"كيف تتأكد من السن أو منطقة الجلد الصحيحة؟",
+   aEn:"By checking the clinical chart and confirming with the patient before starting.", aAr:"بمراجعة الملف السريري والتأكيد مع المريض.",
+   note:"Cross-referencing the doctor's notes with the patient's own understanding."},
+  {en:"What is the purpose of the surgical \"Time-Out\" before skin surgery?", ar:"ما هو الغرض من \"الوقت المستقطع\" (Time-Out) قبل الجراحة؟",
+   aEn:"To verify the correct patient, correct site, and correct procedure.", aAr:"للتحقق من المريض الصحيح، والموقع الصحيح، والإجراء الصحيح.",
+   note:"A critical pause to prevent wrong-site procedures."},
+  {en:"How do you ensure patient privacy in the clinic?", ar:"كيف تضمن خصوصية المريض؟",
+   aEn:"Keep doors closed during procedures and ensure patient records are not visible.", aAr:"إبقاء الأبواب مغلقة وعدم ترك السجلات الطبية مكشوفة.",
+   note:"Tests basic confidentiality awareness on the clinic floor."}
+]},
+{ id:2, title:"Infection Control & Hand Hygiene", titleAr:"مكافحة العدوى ونظافة اليدين", questions:[
+  {en:"What is the correct hand hygiene duration when preparing for a dental procedure?", ar:"ما هي المدة الصحيحة لنظافة اليدين؟",
+   aEn:"20-30 seconds of scrubbing with soap or alcohol-based rub.", aAr:"20-30 ثانية من الفرك بالصابون أو المعقم الكحولي.",
+   note:"Looking for the specific \"20-30 seconds\" metric."},
+  {en:"What are the 5 moments of hand hygiene in the clinic?", ar:"ما هي اللحظات الخمس لنظافة اليدين؟",
+   aEn:"Before patient contact, before aseptic tasks, after body fluid exposure, after patient contact, and after touching patient surroundings.", aAr:"قبل ملامسة المريض، قبل الإجراءات المعقمة، بعد التعرض لسوائل الجسم، بعد ملامسة المريض، وبعد ملامسة محيط المريض.",
+   note:"Core WHO standard; they should list all five triggers."},
+  {en:"How do you perform a thorough surgical hand scrub?", ar:"كيف تقوم بالفرك الجراحي لليدين؟",
+   aEn:"Wet hands, apply antiseptic soap, scrub from fingers to elbows for at least 3-5 minutes, rinse, and dry.", aAr:"بلل اليدين، ضع صابون مطهر، افرك من الأصابع للمرفقين لمدة 3-5 دقائق، اشطف وجفف.",
+   note:"Key difference from normal washing is the time (3-5 mins) and scrubbing up to the elbows."},
+  {en:"When do you change gloves during a dermatological consultation?", ar:"متى تقوم بتغيير القفازات؟",
+   aEn:"Between different patients or if gloves become punctured or contaminated.", aAr:"بين المرضى أو إذا تم ثقبها أو تلوثها.",
+   note:"Ensures they don't reuse gloves across multiple tasks or patients."},
+  {en:"How do you ensure your uniform is compliant with clinical standards?", ar:"كيف تضمن توافق زيك مع المعايير؟",
+   aEn:"Ensure it is clean, closed, and avoids hanging jewelry/long hair that could contaminate the sterile field.", aAr:"نظيف، مغلق، وتجنب المجوهرات المتدلية/الشعر الطويل.",
+   note:"Checking personal grooming and safety standards."}
+]},
+{ id:3, title:"Sharps & Hazardous Waste", titleAr:"الأدوات الحادة والنفايات الخطرة", questions:[
+  {en:"What is the protocol for needle stick injury in the dental/dermal clinic?", ar:"ما هو بروتوكول وخز الإبرة؟",
+   aEn:"Wash the site with soap and water for at least 5 minutes and report it to the infection control officer immediately.", aAr:"غسل المكان بالماء والصابون لـ5 دقائق وإبلاغ مسؤول مكافحة العدوى فوراً.",
+   note:"Emphasizes washing first before panicking or reporting."},
+  {en:"How do you handle a used dental bur or biopsy needle?", ar:"كيف تتعامل مع الإبر أو الشفرات المستخدمة؟",
+   aEn:"Dispose of it immediately into the puncture-proof sharps container.", aAr:"التخلص منها فوراً في حاوية الأدوات الحادة.",
+   note:"No recap, no resting on trays—straight into the yellow box."},
+  {en:"How do you store used dental blades?", ar:"كيف تخزن شفرات الأسنان المستخدمة؟",
+   aEn:"Never store; they must go directly into the sharps container.", aAr:"لا تُخزن أبداً؛ يجب أن توضع مباشرة في حاوية الأدوات الحادة.",
+   note:"A trick question to ensure they know blades are strictly single-use and immediate-disposal."},
+  {en:"How do you clean a blood/saliva spill after a dental extraction?", ar:"كيف تنظف انسكاب الدم/اللعاب؟",
+   aEn:"Wear full PPE, use an absorbent material to soak the spill, apply hospital-approved disinfectants, and wipe.", aAr:"ارتداء معدات الوقاية، استخدام مادة ماصة، وضع مطهر معتمد، ثم المسح.",
+   note:"Confirms they know to absorb the biohazard first before disinfecting."},
+  {en:"How do you dispose of cotton rolls contaminated with blood?", ar:"كيف تتخلص من لفائف القطن الملوثة بالدم؟",
+   aEn:"In the designated yellow biohazard waste bag.", aAr:"في كيس النفايات البيولوجية الأصفر المخصص.",
+   note:"Verifies proper waste segregation (yellow bag vs. normal trash)."}
+]},
+{ id:4, title:"Equipment & Sterilization", titleAr:"الأجهزة والتعقيم", questions:[
+  {en:"If you notice a tear in a sterile dental instrument pack, what do you do?", ar:"ماذا تفعل إذا لاحظت تمزقاً في غلاف أدوات معقمة؟",
+   aEn:"Do not use it; consider it non-sterile and return it for reprocessing.", aAr:"لا تستخدمه؛ اعتبره غير معقم وأعده للتعقيم.",
+   note:"A torn pack is a compromised pack; no exceptions."},
+  {en:"How often should dental suction lines be flushed and disinfected?", ar:"كم مرة يجب شطف خطوط الشفط؟",
+   aEn:"After every patient and at the end of the day using an approved suction cleaner.", aAr:"بعد كل مريض وفي نهاية اليوم باستخدام منظف معتمد.",
+   note:"Prevents bio-film buildup between procedures."},
+  {en:"How to prevent cross-contamination during dental exams?", ar:"كيف تمنع انتقال العدوى أثناء فحص الأسنان؟",
+   aEn:"Use disposable barriers on the chair, light handles, and X-ray sensors.", aAr:"استخدام حواجز بلاستيكية تُستخدم لمرة واحدة على الكرسي والمقابض ومستشعرات الأشعة.",
+   note:"Ensures they actively use physical barriers on touch-points."},
+  {en:"How do you disinfect the dental chair after an appointment?", ar:"كيف تعقم كرسي الأسنان؟",
+   aEn:"Use surface-compatible disinfectant wipes on all contact surfaces, allowing the required contact time.", aAr:"استخدام مناديل مطهرة على جميع الأسطح، مع تركها للمدة المطلوبة.",
+   note:"The key phrase here is \"required contact time\" (allowing the chemical to actually work)."},
+  {en:"What is the acceptable temperature range for the dental/dermal fridge?", ar:"ما هو النطاق المقبول لدرجة حرارة الثلاجة الطبية؟",
+   aEn:"Between 2°C and 8°C.", aAr:"بين 2 و8 درجات مئوية.",
+   note:"Strict metric for safe medication storage (Botox, fillers, anesthetics)."}
+]},
+{ id:5, title:"Emergencies & Monitoring", titleAr:"الطوارئ والمراقبة", questions:[
+  {en:"What is the primary purpose of the crash cart in your specific clinic?", ar:"ما هو الغرض الأساسي من عربة الطوارئ؟",
+   aEn:"To provide immediate life-saving support for medical emergencies like anaphylaxis or cardiac arrest.", aAr:"تقديم دعم فوري لإنقاذ الحياة في حالات الطوارئ مثل الحساسية المفرطة أو توقف القلب.",
+   note:"Validates they know the cart is only for critical life-support, not general supplies."},
+  {en:"What do you do if a patient has an allergic reaction (e.g., to local anesthesia) in the chair?", ar:"ماذا تفعل إذا أصيب المريض برد فعل تحسسي؟",
+   aEn:"Stop the procedure, assess ABCs (Airway, Breathing, Circulation), call for help, and notify the dentist/dermatologist immediately.", aAr:"إيقاف الإجراء، تقييم مجرى الهواء والتنفس والدورة الدموية (ABCs)، طلب المساعدة وإبلاغ الطبيب.",
+   note:"Immediate cessation of work and calling for help is the priority."},
+  {en:"What do you do if a dental patient appears confused or hypoglycemic?", ar:"ماذا تفعل إذا بدا المريض مرتبكاً أو مصاباً بنقص السكر؟",
+   aEn:"Stop the procedure, assess blood sugar if possible, and follow the hypoglycemia protocol.", aAr:"إيقاف الإجراء، فحص السكر إذا أمكن، واتباع بروتوكول نقص السكر.",
+   note:"Recognizing diabetic emergencies during stressful dental work."},
+  {en:"What is the first step in Basic Life Support (BLS) for a dental patient?", ar:"ما هي الخطوة الأولى في الإنعاش القلبي (BLS) لمريض الأسنان؟",
+   aEn:"Ensure the patient is in a flat position, check responsiveness, and call for help.", aAr:"وضع المريض بشكل مسطح، التحقق من الاستجابة، وطلب المساعدة.",
+   note:"You cannot do CPR on a reclined chair; the patient must be flat."},
+  {en:"What do you do if a monitor alarm (e.g., Pulse Oximeter) sounds?", ar:"ماذا تفعل إذا صدر إنذار من جهاز المراقبة؟",
+   aEn:"Immediately check the patient's condition, then troubleshoot the device.", aAr:"فحص حالة المريض فوراً، ثم التحقق من الجهاز.",
+   note:"Always treat the patient first, not the machine."}
+]},
+{ id:6, title:"Medications & Post-Care", titleAr:"الأدوية والرعاية اللاحقة", questions:[
+  {en:"How do you identify a \"High Alert\" medication in your clinic (e.g., local anesthetics or concentrated chemical peels)?", ar:"كيف تتعرف على الأدوية \"عالية الخطورة\"؟",
+   aEn:"By the prominent red/warning label and separate storage location.", aAr:"من خلال الملصق الأحمر/التحذيري ومكان التخزين المنفصل.",
+   note:"Ensures they visually look for safety labels and segregation."},
+  {en:"How should lidocaine or other anesthetic cartridges be stored?", ar:"كيف يجب تخزين خراطيش التخدير؟",
+   aEn:"In a cool, dry place away from direct sunlight, or as per manufacturer temperature guidelines.", aAr:"في مكان بارد وجاف بعيداً عن الشمس، أو حسب تعليمات الشركة.",
+   note:"Proper storage prevents the medication from degrading."},
+  {en:"What do you do if you find an unlabeled anesthetic vial?", ar:"ماذا تفعل إذا وجدت عبوة تخدير بدون ملصق؟",
+   aEn:"Discard it immediately; do not attempt to identify it.", aAr:"التخلص منها فوراً؛ لا تحاول التعرف عليها.",
+   note:"\"If it's not labeled, it's garbage.\" Never guess what a clear liquid is."},
+  {en:"How do you explain a post-procedure skincare routine to a patient?", ar:"كيف تشرح روتين العناية بعد الإجراء؟",
+   aEn:"Use simple verbal instructions and provide a written guide.", aAr:"تعليمات شفهية بسيطة وتقديم دليل مكتوب.",
+   note:"Ensures patients aren't just told, but given physical reference material."},
+  {en:"What do you do before a patient leaves the clinic?", ar:"ماذا تفعل قبل مغادرة المريض للعيادة؟",
+   aEn:"Confirm they have post-procedure instructions and arrange follow-up if needed.", aAr:"التأكد من حصوله على التعليمات وترتيب موعد المتابعة إذا لزم الأمر.",
+   note:"Closing the loop on patient care and discharge safety."}
+]},
+{ id:7, title:"Patient Care & Vitals", titleAr:"رعاية المريض والعلامات الحيوية", questions:[
+  {en:"How do you document a patient's pain level after a tooth extraction?", ar:"كيف توثق مستوى ألم المريض بعد خلع السن؟",
+   aEn:"Use the visual analog scale (0-10) and document in the clinical notes.", aAr:"استخدام المقياس التماثلي البصري (0-10) والتوثيق في الملاحظات السريرية.",
+   note:"Confirms they know to use a standardized, objective scale rather than just writing \"patient is in pain\"."},
+  {en:"What is the normal range for systolic/diastolic blood pressure?", ar:"ما هو المعدل الطبيعي لضغط الدم الانقباضي/الانبساطي؟",
+   aEn:"120/80 mmHg.", aAr:"120/80 ملم زئبق.",
+   note:"A basic clinical baseline check for any staff monitoring vitals."},
+  {en:"How do you manage a dental patient with a high fever?", ar:"كيف تتعامل مع مريض أسنان يعاني من ارتفاع في درجة الحرارة؟",
+   aEn:"Reassess the need for treatment and notify the dentist to decide if it should be postponed.", aAr:"إعادة تقييم الحاجة للعلاج وإبلاغ طبيب الأسنان ليقرر ما إذا كان يجب تأجيله.",
+   note:"Ensures they act as a safeguard, pausing elective treatments if the patient shows signs of systemic illness."},
+  {en:"How do you verify the patient is breathing properly during heavy sedation?", ar:"كيف تتحقق من أن المريض يتنفس بشكل صحيح أثناء التخدير العميق؟",
+   aEn:"Monitor oxygen saturation levels and observe chest movement.", aAr:"مراقبة مستويات تشبع الأكسجين وملاحظة حركة الصدر.",
+   note:"Tests their ability to use both technological monitors and direct physical observation."},
+  {en:"How do you safely assist a patient in getting out of a dental chair after sedation?", ar:"كيف تساعد المريض بأمان في النهوض من كرسي الأسنان بعد التخدير؟",
+   aEn:"Slowly raise the chair back and provide physical support to prevent falls.", aAr:"رفع ظهر الكرسي ببطء وتقديم الدعم الجسدي لمنع السقوط.",
+   note:"Fall prevention is a major safety metric; they must mention doing it slowly to avoid sudden blood pressure drops."}
+]},
+{ id:8, title:"Clinical Reactions & Complications", titleAr:"التفاعلات السريرية والمضاعفات", questions:[
+  {en:"What do you do if a patient complains of sudden pain during a laser session?", ar:"ماذا تفعل إذا اشتكى المريض من ألم مفاجئ أثناء جلسة الليزر؟",
+   aEn:"Stop the laser immediately, check the skin, and inform the doctor.", aAr:"إيقاف الليزر فوراً، فحص الجلد، وإبلاغ الطبيب.",
+   note:"Immediate action (stopping the device) should always precede assessment."},
+  {en:"What are signs of infection at a dental implant site?", ar:"ما هي علامات العدوى في موقع زراعة الأسنان؟",
+   aEn:"Persistent pain, swelling, pus, or localized fever.", aAr:"ألم مستمر، تورم، صديد، أو حرارة موضعية.",
+   note:"Verifies they can identify post-operative complications during follow-up visits."},
+  {en:"What do you do if an IV/injection site looks red or swollen?", ar:"ماذا تفعل إذا بدا موقع الإبرة الوريدية/الحقن أحمر أو متورماً؟",
+   aEn:"Stop the administration, remove the needle, and notify the attending doctor.", aAr:"إيقاف الإعطاء، إزالة الإبرة، وإبلاغ الطبيب المعالج.",
+   note:"Checks their response to potential infiltration or phlebitis."},
+  {en:"What do you do if a patient declares a new allergy to a skin cream?", ar:"ماذا تفعل إذا أعلن المريض عن حساسية جديدة لكريم جلدي؟",
+   aEn:"Immediately update the patient's record and flag it for the doctor.", aAr:"تحديث سجل المريض فوراً ووضع علامة تنبيه للطبيب.",
+   note:"Allergy updates must be formally documented, not just verbally passed along."},
+  {en:"What are the signs of a chemical burn from a skin peel?", ar:"ما هي علامات الحرق الكيميائي الناتج عن تقشير الجلد؟",
+   aEn:"Intense burning, blistering, or sudden redness.", aAr:"حرقان شديد، ظهور بثور، أو احمرار مفاجئ.",
+   note:"Ensures the dermatology team can differentiate between expected mild redness and a severe adverse reaction."}
+]},
+{ id:9, title:"Safety & Incident Management", titleAr:"السلامة وإدارة الحوادث", questions:[
+  {en:"What is the correct sequence for donning PPE before a laser or surgical procedure?", ar:"ما هو التسلسل الصحيح لارتداء معدات الوقاية الشخصية؟",
+   aEn:"Hand hygiene, gown, mask, eye protection (goggles/shield), then gloves.", aAr:"نظافة اليدين، المريول، الكمامة، واقي العين، ثم القفازات.",
+   note:"The key here is that gloves go on last to ensure they remain sterile/clean for the procedure."},
+  {en:"How do you report a near-miss error in the dental clinic?", ar:"كيف تبلغ عن خطأ \"كاد أن يقع\" في عيادة الأسنان؟",
+   aEn:"Document the event in the incident report form immediately, focusing on system improvements.", aAr:"توثيق الحدث في نموذج تقرير الحوادث فوراً، مع التركيز على تحسين النظام.",
+   note:"Emphasizes a culture of safety (reporting near-misses helps fix the system before an actual patient gets hurt)."},
+  {en:"How do you handle a patient who refuses a recommended dental treatment?", ar:"كيف تتعامل مع مريض يرفض علاج أسنان موصى به؟",
+   aEn:"Respect the decision, document the refusal, and educate them on the consequences.", aAr:"احترام القرار، توثيق الرفض، وتثقيفه حول العواقب.",
+   note:"Checks their understanding of patient autonomy and the legal importance of documenting refusal."},
+  {en:"What is the safe way to reach high shelves in the clinic?", ar:"ما هي الطريقة الآمنة للوصول إلى الأرفف العالية في العيادة؟",
+   aEn:"Use a stable stepladder, do not climb on chairs.", aAr:"استخدام سلم صغير ثابت، وعدم التسلق على الكراسي.",
+   note:"A basic occupational health and safety (OHS) check to prevent staff injuries."},
+  {en:"How do you assist a patient with facial paralysis (e.g., post-anesthesia)?", ar:"كيف تساعد مريضاً يعاني من شلل في الوجه (مثل بعد التخدير)؟",
+   aEn:"Ensure they don't bite their cheek/lip and monitor them until feeling returns.", aAr:"التأكد من عدم عضه لخده/شفته ومراقبته حتى يعود الإحساس.",
+   note:"Tests their awareness of post-operative risks while the patient is still numb."}
+]},
+{ id:10, title:"Admin, Documentation & Devices", titleAr:"الإدارة والتوثيق والأجهزة", questions:[
+  {en:"How do you handle a patient's request for their medical photos?", ar:"كيف تتعامل مع طلب مريض للحصول على صوره الطبية؟",
+   aEn:"Follow the center's privacy policy and refer them to the administration office.", aAr:"اتباع سياسة الخصوصية الخاصة بالمركز وتوجيهه إلى مكتب الإدارة.",
+   note:"Nurses should not bypass official channels to share clinical data; it protects patient privacy and data integrity."},
+  {en:"What do you do if a prescription's dosage is unclear?", ar:"ماذا تفعل إذا كانت جرعة الوصفة الطبية غير واضحة؟",
+   aEn:"Verify with the prescribing dentist/dermatologist before proceeding.", aAr:"التحقق من طبيب الأسنان/الجلدية الواصف قبل المتابعة.",
+   note:"They must never guess; safety dictates asking for clarification immediately."},
+  {en:"How do you label dental X-ray/biopsy samples?", ar:"كيف تضع الملصقات على عينات أشعة الأسنان/الخزعة؟",
+   aEn:"Label the container accurately in front of the patient after verification.", aAr:"وضع الملصق على الحاوية بدقة أمام المريض بعد التحقق.",
+   note:"The critical detail is doing it in front of the patient to avoid mix-ups once they leave the room."},
+  {en:"How do you handle oxygen cylinders in the clinic?", ar:"كيف تتعامل مع أسطوانات الأكسجين في العيادة؟",
+   aEn:"Ensure they are secured to the wall or a stand and checked for pressure.", aAr:"التأكد من تثبيتها على الحائط أو حامل والتحقق من الضغط.",
+   note:"Unsecured cylinders are a physical hazard (they can act as projectiles if they fall and the valve breaks)."},
+  {en:"How do you manage a patient's personal items (e.g., jewelry) during a laser procedure?", ar:"كيف تدير الأغراض الشخصية للمريض (مثل المجوهرات) أثناء إجراء الليزر؟",
+   aEn:"Ask the patient to remove them and store them safely.", aAr:"اطلب من المريض إزالتها وتخزينها بأمان.",
+   note:"Metal jewelry can reflect lasers or get caught; securing them prevents both physical injury and liability for lost items."}
+]}
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let selectedGroups = [];
+let flatQuestions = [];
+let answers = {};
+let timerInterval = null;
+let secondsLeft = 0;
+let totalSeconds = 0;
+let startTime = null;
+
+/* =========================================================
+   INIT
+   ========================================================= */
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function updateClock(){
+  const d = new Date();
+  document.getElementById('clock').textContent = d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+}
+updateClock(); setInterval(updateClock, 30000);
+
+function initDate(){
+  const d = new Date();
+  const formatted = d.toLocaleDateString('en-CA'); // YYYY-MM-DD
+  document.getElementById('examDate').value = formatted;
+}
+initDate();
+
+function renderGroupPicker(){
+  const wrap = document.getElementById('groupPicker');
+  wrap.innerHTML = QUESTION_BANK.map(g => `
+    <label class="group-chip checked" id="chip-${g.id}">
+      <input type="checkbox" value="${g.id}" checked onchange="toggleChip(${g.id})">
+      <span>${g.id}. ${g.title}</span>
+    </label>
+  `).join('');
+}
+renderGroupPicker();
+
+function toggleChip(id){
+  const chip = document.getElementById('chip-'+id);
+  chip.classList.toggle('checked', chip.querySelector('input').checked);
+}
+function selectAllGroups(state){
+  document.querySelectorAll('#groupPicker input').forEach(cb=>{
+    cb.checked = state;
+    document.getElementById('chip-'+cb.value).classList.toggle('checked', state);
+  });
+}
+
+/* =========================================================
+   START EXAM
+   ========================================================= */
+function startExam(){
+  const nurseName = document.getElementById('nurseName').value.trim();
+  const evaluatorName = document.getElementById('evaluatorName').value.trim();
+  const minutes = parseInt(document.getElementById('totalMinutes').value, 10) || 60;
+
+  if(!nurseName){ alert('Please enter the nurse\'s name'); return; }
+  if(!evaluatorName){ alert('Please enter the evaluator\'s name'); return; }
+
+  const checked = Array.from(document.querySelectorAll('#groupPicker input:checked')).map(cb=>parseInt(cb.value,10));
+  if(checked.length===0){ alert('Please select at least one group'); return; }
+  selectedGroups = checked;
+
+  flatQuestions = [];
+  QUESTION_BANK.filter(g=>selectedGroups.includes(g.id)).forEach(g=>{
+    g.questions.forEach((q,i)=>{
+      flatQuestions.push({groupId:g.id, groupTitle:g.title, qIndex:i, ...q});
+    });
+  });
+
+  document.getElementById('who-nurse').textContent = nurseName;
+  document.getElementById('who-meta').textContent = `Evaluator: ${evaluatorName} · ${document.getElementById('examDate').value}`;
+
+  totalSeconds = minutes*60;
+  secondsLeft = totalSeconds;
+  startTime = Date.now();
+
+  renderExam();
+  showScreen('screen-exam');
+  timerInterval = setInterval(tickTimer, 1000);
+  updateTimerDisplay();
+}
+
+/* =========================================================
+   RENDER EXAM
+   ========================================================= */
+function renderExam(){
+  const body = document.getElementById('examBody');
+  let html = '';
+  let currentGroup = null;
+
+  flatQuestions.forEach((q, idx)=>{
+    if(q.groupId !== currentGroup){
+      currentGroup = q.groupId;
+      html += `<div class="group-block"><div class="group-title"><span class="group-badge">${q.groupId}</span>${q.groupTitle}</div>`;
+    }
+    const key = `${q.groupId}-${q.qIndex}`;
+    html += `
+      <div class="q-card" data-key="${key}">
+        <div class="q-head">
+          <div>
+            <div class="q-num">Question ${idx+1} of ${flatQuestions.length}</div>
+            <p class="q-en">${q.en}</p>
+            <p class="q-ar ar-text">${q.ar}</p>
+          </div>
+          <button type="button" class="toggle-answer" onclick="toggleAnswer('${key}')">Model Answer</button>
+        </div>
+        <div class="model-answer" id="ans-${key}">
+          <div>${q.aEn}</div>
+          <div class="ar ar-text">${q.aAr}</div>
+          <div class="eval-note">💡 ${q.note}</div>
+        </div>
+        <div class="rating-row">
+          <div class="rate-opt">
+            <input type="radio" name="rate-${key}" id="rate-${key}-none" value="0" onchange="setRating('${key}',0)">
+            <label class="none" for="rate-${key}-none">Not Answered</label>
+          </div>
+          <div class="rate-opt">
+            <input type="radio" name="rate-${key}" id="rate-${key}-partial" value="1" onchange="setRating('${key}',1)">
+            <label class="partial" for="rate-${key}-partial">Partial Answer</label>
+          </div>
+          <div class="rate-opt">
+            <input type="radio" name="rate-${key}" id="rate-${key}-full" value="2" onchange="setRating('${key}',2)">
+            <label class="full" for="rate-${key}-full">Full Answer</label>
+          </div>
+        </div>
+        <textarea class="note-field" placeholder="Optional note on the nurse's answer..." onchange="setNote('${key}', this.value)"></textarea>
+      </div>
+    `;
+    const isLast = idx===flatQuestions.length-1;
+    const nextIsNewGroup = isLast || flatQuestions[idx+1].groupId !== q.groupId;
+    if(nextIsNewGroup) html += `</div>`;
+  });
+
+  body.innerHTML = html;
+  updateProgress();
+}
+
+function toggleAnswer(key){
+  document.getElementById('ans-'+key).classList.toggle('show');
+}
+function setRating(key, val){
+  answers[key] = answers[key] || {};
+  answers[key].rating = val;
+  updateProgress();
+}
+function setNote(key, val){
+  answers[key] = answers[key] || {};
+  answers[key].note = val;
+}
+
+function updateProgress(){
+  const total = flatQuestions.length;
+  const done = Object.values(answers).filter(a=>a.rating!==undefined).length;
+  const pct = total? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `${done} of ${total} questions rated`;
+  document.getElementById('progressPct').textContent = pct+'%';
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+function tickTimer(){
+  secondsLeft--;
+  updateTimerDisplay();
+  if(secondsLeft<=0){
+    clearInterval(timerInterval);
+    alert('Time is up. Results will now be shown.');
+    finishExam();
+  }
+}
+function updateTimerDisplay(){
+  const m = Math.floor(secondsLeft/60), s = secondsLeft%60;
+  document.getElementById('timerNum').textContent = `${pad(m)}:${pad(s)}`;
+  const ring = document.getElementById('timerRing');
+  ring.classList.remove('amber','red');
+  if(secondsLeft<=60) ring.classList.add('red');
+  else if(secondsLeft<=300) ring.classList.add('amber');
+}
+
+function confirmExit(){
+  if(confirm('Are you sure you want to cancel? All entered ratings will be lost.')){
+    clearInterval(timerInterval);
+    location.reload();
+  }
+}
+
+/* =========================================================
+   FINISH & RESULTS
+   ========================================================= */
+function finishExam(){
+  clearInterval(timerInterval);
+  const elapsedMin = Math.round((Date.now()-startTime)/60000);
+
+  let totalScore=0, maxScore=0;
+  const perGroup = {};
+  flatQuestions.forEach(q=>{
+    const key = `${q.groupId}-${q.qIndex}`;
+    const rating = answers[key] ? (answers[key].rating ?? 0) : 0;
+    totalScore += rating; maxScore += 2;
+    if(!perGroup[q.groupId]) perGroup[q.groupId] = {title:q.groupTitle, score:0, max:0};
+    perGroup[q.groupId].score += rating;
+    perGroup[q.groupId].max += 2;
+  });
+
+  const pct = maxScore? Math.round(totalScore/maxScore*100) : 0;
+
+  document.getElementById('finalPct').textContent = pct+'%';
+  document.getElementById('finalSub').textContent = `${totalScore} of ${maxScore} points — ${flatQuestions.length} questions`;
+  document.getElementById('r-nurse').textContent = document.getElementById('nurseName').value.trim();
+  document.getElementById('r-evaluator').textContent = document.getElementById('evaluatorName').value.trim();
+  document.getElementById('r-date').textContent = document.getElementById('examDate').value;
+  document.getElementById('r-time').textContent = elapsedMin + ' min';
+
+  const body = document.getElementById('breakdownBody');
+  body.innerHTML = Object.values(perGroup).map(g=>{
+    const gp = g.max? Math.round(g.score/g.max*100) : 0;
+    let tag = gp>=80 ? '<span class="tag ok">Good</span>' : gp>=50 ? '<span class="tag warn">Average</span>' : '<span class="tag bad">Weak</span>';
+    return `<tr><td>${g.title}</td><td>${g.score}/${g.max}</td><td>${gp}%</td><td>${tag}</td></tr>`;
+  }).join('');
+
+  window._lastResultPayload = {
+    date: document.getElementById('examDate').value,
+    nurseName: document.getElementById('nurseName').value.trim(),
+    evaluatorName: document.getElementById('evaluatorName').value.trim(),
+    groups: selectedGroups.map(id => QUESTION_BANK.find(g=>g.id===id).title),
+    totalQuestions: flatQuestions.length,
+    score: totalScore,
+    maxScore: maxScore,
+    percentage: pct,
+    timeTakenMinutes: elapsedMin,
+    answers: flatQuestions.map(q=>{
+      const key = `${q.groupId}-${q.qIndex}`;
+      return {
+        group: q.groupTitle,
+        question: q.en,
+        rating: answers[key] ? (answers[key].rating ?? 0) : 0,
+        note: answers[key] ? (answers[key].note || '') : ''
+      };
+    })
+  };
+
+  showScreen('screen-results');
+}
+
+function saveResults(){
+  const statusEl = document.getElementById('saveStatus');
+  if(!GAS_WEB_APP_URL || GAS_WEB_APP_URL.indexOf('PUT_YOUR') === 0){
+    statusEl.textContent = 'Apps Script URL not connected yet — see setup instructions.';
+    statusEl.className = 'save-status err';
+    return;
+  }
+  statusEl.textContent = 'Saving...';
+  statusEl.className = 'save-status';
+
+  fetch(GAS_WEB_APP_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(window._lastResultPayload)
+  }).then(()=>{
+    statusEl.textContent = '✓ Results sent successfully to the spreadsheet.';
+    statusEl.className = 'save-status ok';
+  }).catch(err=>{
+    statusEl.textContent = 'Auto-save failed — you can still print manually. (' + err.message + ')';
+    statusEl.className = 'save-status err';
+  });
+}
+
+/* =========================================================
+   SCREEN SWITCH
+   ========================================================= */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
