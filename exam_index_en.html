@@ -763,7 +763,7 @@ function finishExam(){
     date: document.getElementById('examDate').value,
     nurseName: document.getElementById('nurseName').value.trim(),
     evaluatorName: document.getElementById('evaluatorName').value.trim(),
-    groups: selectedGroups.map(id => QUESTION_BANK.find(g=>g.id===id).title),
+    groups: selectedGroups.map(id => ({ id, title: QUESTION_BANK.find(g=>g.id===id).title })),
     totalQuestions: flatQuestions.length,
     score: totalScore,
     maxScore: maxScore,
@@ -772,6 +772,7 @@ function finishExam(){
     answers: flatQuestions.map(q=>{
       const key = `${q.groupId}-${q.qIndex}`;
       return {
+        groupId: q.groupId,
         group: q.groupTitle,
         question: q.en,
         rating: answers[key] ? (answers[key].rating ?? 0) : 0,
