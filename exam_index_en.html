@@ -191,7 +191,7 @@
 /* =========================================================
    CONFIG — put your Apps Script Web App URL here after deployment
    ========================================================= */
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxlcIAkBgr8qKDozTvTf5sNBqz1rV68f6uTKPoOgMsuRcqw7nejI_O4-5w_BvFCINlU/exec";
+const GAS_WEB_APP_URL = "PUT_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 /* =========================================================
    DATA — question bank (10 groups x 5 questions)
@@ -279,6 +279,12 @@ let timerInterval = null;
 let secondsLeft = 0;
 let totalSeconds = 0;
 let writeStartTime = null;
+let currentSubmissionId = null;
+
+function generateId(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+}
 
 function pad(n){ return String(n).padStart(2,'0'); }
 
@@ -338,6 +344,24 @@ function startExam(){
   totalSeconds = minutes*60;
   secondsLeft = totalSeconds;
   writeStartTime = Date.now();
+  currentSubmissionId = generateId();
+
+  if(GAS_WEB_APP_URL && GAS_WEB_APP_URL.indexOf('PUT_YOUR') !== 0){
+    fetch(GAS_WEB_APP_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action:'startExam',
+        submissionId: currentSubmissionId,
+        date: document.getElementById('examDate').value,
+        nurseName: nurseName,
+        evaluatorName: evaluatorName,
+        groups: selectedGroups.map(id => ({ id, title: QUESTION_BANK.find(g=>g.id===id).title })),
+        totalQuestions: flatQuestions.length
+      })
+    }).catch(()=>{ /* ignore — full save is retried on submit */ });
+  }
 
   renderWrite();
   showScreen('screen-write');
@@ -419,6 +443,7 @@ function saveAndSubmit(){
 
   const payload = {
     action: 'submitExam',
+    submissionId: currentSubmissionId,
     date: document.getElementById('examDate').value,
     nurseName: nurseName,
     evaluatorName: document.getElementById('evaluatorName').value.trim(),
