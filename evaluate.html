@@ -433,20 +433,40 @@ function loadPending(){
       return;
     }
     const items = res.items || [];
-    document.getElementById('pendingCount').textContent = `${items.length} اختبار بانتظار التقييم`;
+    const pendingGrading = items.filter(it => it.status === 'بانتظار التقييم');
+    const inProgress = items.filter(it => it.status === 'قيد الإجراء');
+    document.getElementById('pendingCount').textContent = `${pendingGrading.length} بانتظار التقييم · ${inProgress.length} قيد الإجراء الآن`;
+
     if(items.length === 0){
       listEl.innerHTML = '<div class="empty-state"><div class="icon">✅</div>لا يوجد اختبارات بانتظار التقييم حالياً.</div>';
       return;
     }
-    listEl.innerHTML = items.map(it => `
-      <div class="pending-item">
-        <div class="info">
-          <b>${escapeHtml(it.nurseName)}</b>
-          <span>${escapeHtml(it.date)} · ${it.totalQuestions} سؤال · المقيّم: ${escapeHtml(it.evaluatorName)}</span>
+
+    let html = '';
+    if(pendingGrading.length > 0){
+      html += pendingGrading.map(it => `
+        <div class="pending-item">
+          <div class="info">
+            <b>${escapeHtml(it.nurseName)}</b>
+            <span>${escapeHtml(it.date)} · ${it.totalQuestions} سؤال · المقيّم: ${escapeHtml(it.evaluatorName)}</span>
+          </div>
+          <button class="btn-primary" onclick="openSubmission('${it.id}')">ابدأ التقييم</button>
         </div>
-        <button class="btn-primary" onclick="openSubmission('${it.id}')">ابدأ التقييم</button>
-      </div>
-    `).join('');
+      `).join('');
+    }
+    if(inProgress.length > 0){
+      html += `<div style="margin:18px 0 8px; font-size:13px; font-weight:700; color:var(--ink-soft);">قيد الإجراء الآن (بدأت ولم تُرسل إجاباتها بعد)</div>`;
+      html += inProgress.map(it => `
+        <div class="pending-item" style="opacity:.75;">
+          <div class="info">
+            <b>${escapeHtml(it.nurseName)}</b>
+            <span>${escapeHtml(it.date)} · ${it.totalQuestions} سؤال · بدأت الاختبار ولم تُنهِه بعد</span>
+          </div>
+          <span class="tag warn" style="padding:6px 12px;">قيد الإجراء</span>
+        </div>
+      `).join('');
+    }
+    listEl.innerHTML = html || '<div class="empty-state"><div class="icon">✅</div>لا يوجد اختبارات حالياً.</div>';
   }).catch(err=>{
     listEl.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div>تعذر الاتصال بالسكربت: ' + err.message + '</div>';
   });
